@@ -2,7 +2,7 @@
  * Class: CMSC495
  * Date: 23 AUG 2023
  * Creator: Alan Anderson
- * Team Members: Alan Anderson, William Feighner, Michael Wood Jr., Ibadet Mijit, Jenna Seipel
+ * Team Members: Alan Anderson, William Feighner, Michael Wood Jr., Ibadet Mijit, Jenna Seipel, Joseph Lewis
  * File: Player.java
  * Description: The Player in a game of Kingdomino selects a domino each round, then places it on their game board
  * for later scoring. The player class maintains information about the player and player order.
@@ -14,7 +14,7 @@ public class Player {
     private String name = ""; // player's name
     private int currentOrder; // current round player turn order
     private int nextOrder; // next round turn order based on domino selection in the current round
-    private final GameBoard gameboard; // player's game board
+    private GameBoard gameboard; // player's game board
 
     // constructor
     public Player(String name) throws InvalidPlayerNameException {

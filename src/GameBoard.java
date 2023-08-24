@@ -16,44 +16,69 @@ public class GameBoard {
     // attributes
     private final int WIDTH = 5; // max width of game board
     private final int HEIGHT = 5; // max height of game board
-    private final Space[][] spaces; // representation of grid spaces on game board
+    private final int MAX_WIDTH = 9; // initial width of game board
+    private final int MAX_HEIGHT = 9; // initial height of game board
+    private Space[][] spaces; // representation of grid spaces on game board
     private ArrayList<ArrayList<Space>> scoredSpaces; // array list of spaces scored
     private int scoredSpacesCurrentLevel = 0; // current scoring level; used to group spaces for scoring
     private int currentScore = 0; // current score for the game board
 
     // constructor
     public GameBoard() {
-        spaces = new Space[WIDTH][HEIGHT]; // create matrix of spaces based on max height and width
-        for (int i = 0; i < WIDTH; i++) {
-            for (int k = 0; k < HEIGHT; k++) {
-                if (i == (WIDTH / 2) && (k == (HEIGHT / 2))) {
-                    spaces[i][k] = new Space(LandType.CASTLE, i, k); // Place starting castle in center of game board
-                } else {
-                    spaces[i][k] = new Space(LandType.EMPTY, i, k); // set each space on board to empty type
-                }
+        spaces = new Space[MAX_WIDTH][MAX_HEIGHT]; // create matrix of spaces based on max height and width
+        for (int i = 0; i < MAX_WIDTH; i++) {
+            for (int k = 0; k < MAX_HEIGHT; k++) {
+                spaces[i][k] = new Space(LandType.EMPTY, i, k); // set each space on board to empty type
             }
         }
+        spaces[4][4].setSType(LandType.CASTLE); // set castle in middle of game board
     }
 
     // methods
 
     // resets scored flag of each game board space to false; called after checking scoring
     public void resetSpacesScoredBooleanCheck() {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int k = 0; k < HEIGHT; k++) {
+        for (int i = 0; i < MAX_WIDTH; i++) {
+            for (int k = 0; k < MAX_HEIGHT; k++) {
                 spaces[i][k].setScored(false);
             }
         }
     }
 
+    public int[] getPlayArea() {
+        int minY = 10;
+        int maxY = -1;
+        int minX = 10;
+        int maxX = -1;
+
+        for (int x = 0; x < MAX_WIDTH; x++) {
+            for (int y = 0; y < MAX_HEIGHT; y++) {
+                if (spaces[x][y].getSType() != LandType.EMPTY) { // if space is occupied
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                }
+            }
+        }
+
+        int newMinX = maxX - 4;
+        int newMaxX = minX + 4;
+        int newMinY = maxY - 4;
+        int newMaxY = minY + 4;
+
+        System.out.println(newMinX + " " + newMaxX + " " + newMinY + " " + newMaxY);
+        return new int[]{newMinX, newMaxX, newMinY, newMaxY};
+    }
+
     // calculates current game board score through recursively calling scoreAll(x, y); returns score
     public void calculateCurrentScore(boolean debug) {
-        scoredSpaces = new ArrayList<>(); // reset array list
+        scoredSpaces = new ArrayList<ArrayList<Space>>(); // reset array list
         scoredSpacesCurrentLevel = 0; // reset scoring level
-        for (int k = 0; k < WIDTH; k++) {
-            for (int i = 0; i < HEIGHT; i++) {
+        for (int k = 0; k < MAX_WIDTH; k++) {
+            for (int i = 0; i < MAX_HEIGHT; i++) {
                 if (!this.getGameBoardSpace(i, k).getScored()) {
-                    scoredSpaces.add(new ArrayList<>());
+                    scoredSpaces.add(new ArrayList<Space>());
                     //System.out.println("Size: " + scoredSpaces.size());
                     scoreAll(i, k);
                     scoredSpacesCurrentLevel++;
@@ -63,11 +88,6 @@ public class GameBoard {
 
         if (debug) this.debugGameBoardPrint(); // print game board tile info if in debug mode
 
-        this.currentScore = getTotalScore(); // set this game board's score as the calculated score
-        this.resetSpacesScoredBooleanCheck(); // reset "scored" flag on each game board space
-    }
-
-    private int getTotalScore() {
         int totalScore = 0; // capture total score
         for (ArrayList<Space> a : scoredSpaces) { // for each group of tiles grouped together in a score group
             int totalCrowns = 0; // prepare to capture the total number of crowns
@@ -77,7 +97,9 @@ public class GameBoard {
             }
             totalScore += totalCrowns * totalSpaces; // multiply crowns and spaces in group; add to total score
         }
-        return totalScore;
+
+        this.currentScore = totalScore; // set this game board's score as the calculated score
+        this.resetSpacesScoredBooleanCheck(); // reset "scored" flag on each game board space
     }
 
     // returns the current score of this game board
@@ -104,14 +126,14 @@ public class GameBoard {
                 totalCrowns += s.getNumCrowns(); // print info and add crowns to total crowns
             }
             System.out.println("Group Score: " + (totalCrowns * totalSpaces));
-            System.out.println();
+            System.out.println("");
             groupNumber++; // increase group number for print purposes
         }
     }
 
     public void scoreAll(int startX, int startY) {
         // if space to be scored is outside of game board, don't check it
-        if (startX > WIDTH - 1 || startX < 0 || startY > HEIGHT - 1 || startY < 0) {
+        if (startX > MAX_WIDTH - 1 || startX < 0 || startY > MAX_HEIGHT - 1 || startY < 0) {
             return;
         }
 
@@ -120,9 +142,9 @@ public class GameBoard {
             return;
         }
 
-        // if this space type is different from other space types in this score group, don't check it
+        // if this space type is different than other space types in this score group, don't check it
         for (Space s : scoredSpaces.get(scoredSpacesCurrentLevel)) {
-            if (!scoredSpaces.get(scoredSpacesCurrentLevel).isEmpty() &&
+            if (scoredSpaces.get(scoredSpacesCurrentLevel).size() > 0 &&
                     this.getGameBoardSpace(startX, startY).getSType() != s.getSType()) {
                 return;
             }
@@ -156,10 +178,10 @@ public class GameBoard {
     }
 
     // subclasses
-    static class Space {
+    class Space {
         private LandType sType; // type of land on this space
         private int xLoc; // x location of this space on game board
-        private int yLoc; // y location of this space on game board
+        private int yLoc; // y location of this sapce on game board
         private int numCrowns; // number of crowns this space has
         private boolean scored; // whether this space has been scored
 
