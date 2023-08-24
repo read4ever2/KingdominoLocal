@@ -10,10 +10,10 @@
 public class ProjectInfo {
 	
 	// attributes
-	private static String[] authors = {"Alan Anderson", "William Feighner", "Michael Wood Jr.", 
+	private static final String[] authors = {"Alan Anderson", "William Feighner", "Michael Wood Jr.",
 			"Ibadet Mijit", "Jenna Seipel"};
-	private static String groupName = "The Domino Dynasty";
-	private static String title = "Kingdomino Digital Board Game";
+	private static final String groupName = "The Domino Dynasty";
+	private static final String title = "Kingdomino Digital Board Game";
 	
 	// getters
 	public static String[] getAuthors() {

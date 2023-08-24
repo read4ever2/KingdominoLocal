@@ -9,7 +9,7 @@ public enum SideType {
 	CASTLE("CASTLE"),
 	EMPTY("EMPTY");
 	
-	private String sideDesc;
+	private final String sideDesc;
 	
 	SideType(String sideDesc) {
 		this.sideDesc = sideDesc;

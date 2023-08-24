@@ -18,7 +18,7 @@ public class TestGameBoardScoring {
 	public static void main(String[] args) throws InvalidPlayerNameException {
 		Random randPlayers = new Random();
 		int randNumPlayers = randPlayers.nextInt(2,5);
-		ArrayList<Player> playerList = new ArrayList<Player>(); // generate 2 to 4 players
+		ArrayList<Player> playerList = new ArrayList<>(); // generate 2 to 4 players
 		//GameBoard[] gb = new GameBoard[randNumPlayers]; // create a blank game board
 		Random randType = new Random(); // set up the game board spaces to be randomized
 		Random randCrowns = new Random(); // set up the crowns to be randomized
@@ -54,20 +54,24 @@ public class TestGameBoardScoring {
 					}
 					System.out.println("\n");
 				}
-				System.out.println("");
+				System.out.println();
 				
 				// then print the score for the board and other debug info
-				System.out.println("Current Score: " + p.getPlayerGameBoard().getCurrentScoreDebug());	
+				System.out.println("Current Score: " + p.getPlayerGameBoard().getCurrentScoreDebug());
 
-				System.out.println("\n////--------FINAL SCORING--------\\\\\\\\\n");
-				
-				playerList.sort(Comparator.comparing(x -> x.getPlayerGameBoard().getCurrentScore()));
-				
-				for (int px = playerList.size()-1; px >= 0; px--) {
-					System.out.println(playerList.get(px).getPlayerName() + "'s final score: " 
-							+ playerList.get(px).getPlayerGameBoard().getCurrentScore());
-				}
-			
+			finalScoring(playerList);
+
+		}
+	}
+
+	static void finalScoring(ArrayList<Player> playerList) {
+		System.out.println("\n////--------FINAL SCORING--------\\\\\\\\\n");
+
+		playerList.sort(Comparator.comparing(x -> x.getPlayerGameBoard().getCurrentScore()));
+
+		for (int px = playerList.size()-1; px >= 0; px--) {
+			System.out.println(playerList.get(px).getPlayerName() + "'s final score: "
+					+ playerList.get(px).getPlayerGameBoard().getCurrentScore());
 		}
 	}
 }

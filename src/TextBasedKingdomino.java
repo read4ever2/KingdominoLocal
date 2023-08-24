@@ -15,10 +15,10 @@ import java.util.Scanner;
 public class TextBasedKingdomino {
 	
 	// attributes
-	private Scanner menuScanner = new Scanner(System.in); // scanner for user input
+	private final Scanner menuScanner = new Scanner(System.in); // scanner for user input
 	private int playerCount; // total number of players
 	private ArrayList<Player> playerList; // list of players
-	private ArrayList<Domino> gameDominoList = new ArrayList<Domino>(); // list of all dominos in game
+	private ArrayList<Domino> gameDominoList = new ArrayList<>(); // list of all dominos in game
 	
 	public static void main (String[] args) {
 		TextBasedKingdomino kingdomino = new TextBasedKingdomino();
@@ -30,7 +30,7 @@ public class TextBasedKingdomino {
 	// displays the group name and title of the project
 	public void displayTitle() {
 		
-		String title[] = new String[6];
+		String[] title = new String[6];
 		// ASCII Text generated from:
 		// https://patorjk.com/software/taag/
 		title[0] = " ____  __.__                   .___             .__       .__";
@@ -41,9 +41,9 @@ public class TextBasedKingdomino {
 		title[5] = "        \\/       \\//_____/      \\/            \\/        \\/     ";
     
 		System.out.println(ProjectInfo.getGroupName() + " presents...");
-		for (int i = 0; i < title.length; i++) {
-			System.out.println(title[i]);
-		}
+        for (String s : title) {
+            System.out.println(s);
+        }
 		System.out.println("\n" + ProjectInfo.getTitle() + "\n");
 				
 		initializeKingdomino();
@@ -56,10 +56,10 @@ public class TextBasedKingdomino {
 		this.displayPlayerNames();
 		System.out.println("\nThe player order for this game is: \n"); // white space for readability
 		this.randomizePlayerOrder();
-		System.out.println(""); // white space for readability
+		System.out.println(); // white space for readability
 		// create master domino list, then remove some based on player count
 		this.gameDominoList = StaticGameDominoList.getDominosList();
-		StaticGameDominoList.removeDominosFromList(playerCount);
+		StaticGameDominoList.removeDominoesFromList(playerCount);
 
 		/* //debug text for showing which dominos are in game
 		for (Domino d : StaticGameDominoList.getDominosList()) {
@@ -78,7 +78,7 @@ public class TextBasedKingdomino {
 		System.out.println("Choose the number of players: 2, 3, or 4");
 		while (menuScanner.hasNextLine()) {
 			try {
-				setPlayerCount(Integer.valueOf(menuScanner.nextLine()));
+				setPlayerCount(Integer.parseInt(menuScanner.nextLine()));
 				if (this.playerCount < 2 || this.playerCount > 4) {
 					throw new InvalidPlayerNumberException("invalid player number");
 				} else {
@@ -93,7 +93,7 @@ public class TextBasedKingdomino {
 	}
 	
 	public void createPlayers() {
-		ArrayList<Player> newPlayerList = new ArrayList<Player>();
+		ArrayList<Player> newPlayerList = new ArrayList<>();
 		
 		int currentPlayer = 1;
 		while (currentPlayer <= getPlayerCount()) {
@@ -128,7 +128,7 @@ public class TextBasedKingdomino {
 	}
 	
 	public void randomizePlayerOrder() {
-		ArrayList<Integer> order = new ArrayList<Integer>();
+		ArrayList<Integer> order = new ArrayList<>();
 		for (int i = 0; i < this.getPlayerList().size(); i++) {
 			order.add(i);
 		}
@@ -148,12 +148,12 @@ public class TextBasedKingdomino {
 		int round = 1; // current round
 		
 		// current dominos to be selected for this round
-		ArrayList<Domino> currentDominoSelection = new ArrayList<Domino>();
+		ArrayList<Domino> currentDominoSelection = new ArrayList<>();
 		
 		Random rand = new Random(); // chooses which dominos are available each round
 		
 		// while there are still dominos left to be selected in the game
-		while (this.getDominosList().size() != 0) {
+		while (!this.getDominosList().isEmpty()) {
 			System.out.println("////--------ROUND " + round + "--------\\\\\\\\\n");
 			// pull random dominos equal to the amount of players in the game
 			for (int i = 0; i < this.getPlayerList().size(); i++) {
@@ -184,7 +184,7 @@ public class TextBasedKingdomino {
 				}
 				
 
-				System.out.println("");
+				System.out.println();
 				
 				boolean dominoSelected = false; // flag for selecting domino
 				int selection = 0; // domino selected by player from list
@@ -199,7 +199,7 @@ public class TextBasedKingdomino {
 					// capture the player's choice for their selected domino
 					while (menuScanner.hasNextLine()) {
 						try {
-							selection = Integer.valueOf(menuScanner.nextLine());
+							selection = Integer.parseInt(menuScanner.nextLine());
 							if (selection < 0 || selection > currentDominoSelection.size()) {
 								throw new IllegalArgumentException("Error: selection not in range");
 							}
@@ -224,10 +224,10 @@ public class TextBasedKingdomino {
 				selectedDomino.getSideB().setYLoc(0);
 				
 				// capture current location of selected domino
-				int sax = selectedDomino.getSideA().getXLoc();
-				int say = selectedDomino.getSideA().getYLoc();
-				int sbx = selectedDomino.getSideB().getXLoc();
-				int sby = selectedDomino.getSideB().getYLoc();
+				int sax;
+				int say;
+				int sbx;
+				int sby;
 				
 				// capture change in location to be applied to selected domino
 				int xChangeA = 0;
@@ -247,22 +247,22 @@ public class TextBasedKingdomino {
 					// capture player board here to reduce line space in next block of code
 					GameBoard.Space[][] playerBoardSpaces = p.getPlayerGameBoard().getGameBoardSpaces();
 					
-					System.out.println("Current board state with selected dominio: \n");
+					System.out.println("Current board state with selected domino: \n");
 					
-					// this next portion prints the current game board and current locatino of domino to be played
+					// this next portion prints the current game board and current location of domino to be played
 					// the domino location is surrounded by brackets []
 					// if the domino location is over another domino already placed on the board
 					// then the domino has an asterisks * next to it
 					for (int y = 0; y < p.getPlayerGameBoard().getHeight(); y++) { // for each y
 						for (int x = 0; x < p.getPlayerGameBoard().getWidth(); x++) { // for each x
-							if (sax == x && say == y) { // if side a of the domino is here, display inside brackets
+							if (sax == x && say == y) { // if side an of the domino is here, display inside brackets
 								System.out.print(" [" + selectedDomino.sideAToString() + "]");
 								if (playerBoardSpaces[sax][say].getSType() != LandType.EMPTY) {
 									System.out.print("*");
 								} else {
 									System.out.print(" ");
 								}
-							} else if (sbx == x && sby == y) { // if side b of the dimino is here, use brackets
+							} else if (sbx == x && sby == y) { // if side b of the domino is here, use brackets
 								System.out.print(" [" + selectedDomino.sideBToString() +"]");
 								if (playerBoardSpaces[sbx][sby].getSType() != LandType.EMPTY) {
 									System.out.print("*");
@@ -277,7 +277,7 @@ public class TextBasedKingdomino {
 						}
 						System.out.println("\n");
 					}
-					System.out.println("");
+					System.out.println();
 					
 					// display domino placement menu
 					System.out.println("Select an action for the domino:");
@@ -293,7 +293,7 @@ public class TextBasedKingdomino {
 					// continue loop until correct option is selected
 					while (menuScanner.hasNextLine()) {
 						try {
-							option = Integer.valueOf(menuScanner.nextLine());
+							option = Integer.parseInt(menuScanner.nextLine());
 							if (option < 1 || option > 8) {
 								throw new IllegalArgumentException("Error: selection not in range");
 							}
@@ -303,166 +303,151 @@ public class TextBasedKingdomino {
 						}
 					}
 					
-					// temp varibles to track domino rotation
+					// temp variables to track domino rotation
 					int tempsbx;
 					int tempsby;
-					
-					switch(option) {
-					
-					case 1: // rotate clockwise
-						if (say == sby) { // if domino is horizontal
-							if (sax < sbx) { // if in original orientation
-								tempsby = sby + 1;
-								tempsbx = sbx - 1;
-							} else { // otherwise, if flipped 180 degrees
-								tempsby = sby - 1;
-								tempsbx = sbx + 1;
-							}
-							
-						} else { // if domino is flipped 90 or 270 degrees
-							if (say < sby) {
-								tempsby = sby - 1;
-								tempsbx = sbx - 1;
-							} else {
-								tempsby = sby + 1;
-								tempsbx = sbx + 1;
-							}
-						}
-						
-						// if rotation would cause any part of domino to be outside of game board range
-						if (tempsby < 0 || tempsby > p.getPlayerGameBoard().getHeight()-1 ||
-								tempsbx < 0 || tempsbx > p.getPlayerGameBoard().getWidth()-1) {
-							System.out.println("Error: rotation will cause domino to fall outside of play area");
-							break;
-						}
-						
-						// capture locatoin changes from domino rotation
-						xChangeA = sax;
-						yChangeA = say;
-						xChangeB = tempsbx;
-						yChangeB = tempsby;
-						break;
-						
-					case 2: // same as above, but counter clockwise
-						if (say == sby) { // if domino is horizontal
-							if (sax < sbx) { // if in original orientation
-								tempsby = sby - 1;
-								tempsbx = sbx - 1;
-							} else { // otherwise, if flipped 180 degrees
-								tempsby = sby + 1;
-								tempsbx = sbx + 1;
-							}
-							
-						} else { // if domino is flipped 90 or 270 degrees
-							if (say < sby) {
-								tempsby = sby - 1;
-								tempsbx = sbx + 1;
-							} else {
-								tempsby = sby + 1;
-								tempsbx = sbx - 1;
-							}
-						}
-						
-						if (tempsby < 0 || tempsby > p.getPlayerGameBoard().getHeight()-1 ||
-								tempsbx < 0 || tempsbx > p.getPlayerGameBoard().getWidth()-1) {
-							System.out.println("Error: rotation will cause domino to fall outside of play area");
-							break;
-						}
-						
-						xChangeA = sax;
-						yChangeA = say;
-						xChangeB = tempsbx;
-						yChangeB = tempsby;
-						break;
 
-					case 3: // move domino up
-						// don't move up if doing so moves it outside of game board range
-						if (selectedDomino.getSideA().getYLoc() - 1 < 0 || 
-								selectedDomino.getSideB().getYLoc() - 1 < 0) {
-							System.out.println("Error: invalid move. Domino will be outside of play area");
-							break;
-						} else {
-							xChangeA = selectedDomino.getSideA().getXLoc();
-							yChangeA = selectedDomino.getSideA().getYLoc() - 1;
-							xChangeB = selectedDomino.getSideB().getXLoc();
-							yChangeB = selectedDomino.getSideB().getYLoc() - 1;
-							break;
-						}
-						
-					case 4: // move domino down
-						// don't do down if moving outside of game board
-						if (selectedDomino.getSideA().getYLoc() + 1 > p.getPlayerGameBoard().getHeight()-1 ||
-								selectedDomino.getSideB().getYLoc() + 1 > p.getPlayerGameBoard().getHeight()-1) {
-							System.out.println("Error: invalid move. Domino will be outside of play area");
-							break;
-						} else {
-							xChangeA = selectedDomino.getSideA().getXLoc();
-							yChangeA = selectedDomino.getSideA().getYLoc() + 1;
-							xChangeB = selectedDomino.getSideB().getXLoc();
-							yChangeB = selectedDomino.getSideB().getYLoc() + 1;
-							break;
-						}
-								
-					case 5: // move left
-						if (selectedDomino.getSideA().getXLoc() - 1 < 0 ||
-								selectedDomino.getSideB().getXLoc() - 1< 0) {
-							System.out.println("Error: invalid move. Domino will be outside of play area");
-							break;
-						} else {
-							xChangeA = selectedDomino.getSideA().getXLoc() - 1;
-							yChangeA = selectedDomino.getSideA().getYLoc();
-							xChangeB = selectedDomino.getSideB().getXLoc() - 1;
-							yChangeB = selectedDomino.getSideB().getYLoc();
-							break;
-						}
+                    switch (option) {
+                        case 1 -> { // rotate clockwise
+                            if (say == sby) { // if domino is horizontal
+                                if (sax < sbx) { // if in original orientation
+                                    tempsby = sby + 1;
+                                    tempsbx = sbx - 1;
+                                } else { // otherwise, if flipped 180 degrees
+                                    tempsby = sby - 1;
+                                    tempsbx = sbx + 1;
+                                }
 
-					case 6: // move right
-						if (selectedDomino.getSideA().getXLoc() + 1 >p.getPlayerGameBoard().getWidth()-1 ||
-								selectedDomino.getSideB().getXLoc() + 1 >p.getPlayerGameBoard().getWidth()-1) {
-							System.out.println("Error: invalid move. Domino will be outside of play area");
-							break;
-						} else {
-							xChangeA = selectedDomino.getSideA().getXLoc() + 1;
-							yChangeA = selectedDomino.getSideA().getYLoc();
-							xChangeB = selectedDomino.getSideB().getXLoc() + 1;
-							yChangeB = selectedDomino.getSideB().getYLoc();
-							break;
-						}
-							
-					case 7: // place domino on board at current location
-	                            		// if both sides of domino are over a space location that's empty
-                           			 if (playerBoardSpaces[sax][say].getSType() == LandType.EMPTY &&
-		                                    	playerBoardSpaces[sbx][sby].getSType() == LandType.EMPTY &&
-                                    			verifyMatchingSide(p.getPlayerGameBoard().getGameBoardSpaces(), sax, say, sbx, sby, selectedDomino)) {
-                                			// place domino on the game board
-                                			int crownsA = selectedDomino.getSideACrowns();
-                                			int crownsB = selectedDomino.getSideBCrowns();
-                                			LandType sideTypeA = selectedDomino.getSideA().getSType();
-                                			LandType sideTypeB = selectedDomino.getSideB().getSType();
+                            } else { // if domino is flipped 90 or 270 degrees
+                                if (say < sby) {
+                                    tempsby = sby - 1;
+                                    tempsbx = sbx - 1;
+                                } else {
+                                    tempsby = sby + 1;
+                                    tempsbx = sbx + 1;
+                                }
+                            }
 
-                                			p.getPlayerGameBoard().getGameBoardSpace(sax, say).setNumCrowns(crownsA);
-                                			p.getPlayerGameBoard().getGameBoardSpace(sax, say).setSType(sideTypeA);
-                                			p.getPlayerGameBoard().getGameBoardSpace(sbx, sby).setNumCrowns(crownsB);
-                                			p.getPlayerGameBoard().getGameBoardSpace(sbx, sby).setSType(sideTypeB);
+                            // if rotation would cause any part of domino to be outside of game board range
+                            if (tempsby < 0 || tempsby > p.getPlayerGameBoard().getHeight() - 1 ||
+                                    tempsbx < 0 || tempsbx > p.getPlayerGameBoard().getWidth() - 1) {
+                                System.out.println("Error: rotation will cause domino to fall outside of play area");
+                                break;
+                            }
 
-                                			currentDominoSelection.remove(selection - 1);
-                                			dominoPlaced = true;
-                                			break;
-                            			} else {
-                                			if (verifyMatchingSide(p.getPlayerGameBoard().getGameBoardSpaces(), sax, say, sbx, sby, selectedDomino)) {
-                                    				System.out.println("Error: location not empty for domino placement");
-                                			} else {
-                                    				System.out.println("Error: At least one side of the tile must match an existing tile or castle.");
-                                			}			
-                                			break;
-                            			}
-					
-					case 8:
-						// domino is discarded, go to next player
-						currentDominoSelection.remove(selection-1);
-						dominoPlaced = true;
-						break;
-					}
+                            // capture location changes from domino rotation
+                            xChangeA = sax;
+                            yChangeA = say;
+                            xChangeB = tempsbx;
+                            yChangeB = tempsby;
+                        }
+                        case 2 -> { // same as above, but counterclockwise
+                            if (say == sby) { // if domino is horizontal
+                                if (sax < sbx) { // if in original orientation
+                                    tempsby = sby - 1;
+                                    tempsbx = sbx - 1;
+                                } else { // otherwise, if flipped 180 degrees
+                                    tempsby = sby + 1;
+                                    tempsbx = sbx + 1;
+                                }
+
+                            } else { // if domino is flipped 90 or 270 degrees
+                                if (say < sby) {
+                                    tempsby = sby - 1;
+                                    tempsbx = sbx + 1;
+                                } else {
+                                    tempsby = sby + 1;
+                                    tempsbx = sbx - 1;
+                                }
+                            }
+                            if (tempsby < 0 || tempsby > p.getPlayerGameBoard().getHeight() - 1 ||
+                                    tempsbx < 0 || tempsbx > p.getPlayerGameBoard().getWidth() - 1) {
+                                System.out.println("Error: rotation will cause domino to fall outside of play area");
+                                break;
+                            }
+                            xChangeA = sax;
+                            yChangeA = say;
+                            xChangeB = tempsbx;
+                            yChangeB = tempsby;
+                        }
+                        case 3 -> { // move domino up
+                            // don't move up if doing so moves it outside of game board range
+                            if (selectedDomino.getSideA().getYLoc() - 1 < 0 ||
+                                    selectedDomino.getSideB().getYLoc() - 1 < 0) {
+                                System.out.println("Error: invalid move. Domino will be outside of play area");
+                            } else {
+                                xChangeA = selectedDomino.getSideA().getXLoc();
+                                yChangeA = selectedDomino.getSideA().getYLoc() - 1;
+                                xChangeB = selectedDomino.getSideB().getXLoc();
+                                yChangeB = selectedDomino.getSideB().getYLoc() - 1;
+                            }
+                        }
+                        case 4 -> { // move domino down
+                            // don't do down if moving outside of game board
+                            if (selectedDomino.getSideA().getYLoc() + 1 > p.getPlayerGameBoard().getHeight() - 1 ||
+                                    selectedDomino.getSideB().getYLoc() + 1 > p.getPlayerGameBoard().getHeight() - 1) {
+                                System.out.println("Error: invalid move. Domino will be outside of play area");
+                            } else {
+                                xChangeA = selectedDomino.getSideA().getXLoc();
+                                yChangeA = selectedDomino.getSideA().getYLoc() + 1;
+                                xChangeB = selectedDomino.getSideB().getXLoc();
+                                yChangeB = selectedDomino.getSideB().getYLoc() + 1;
+                            }
+                        }
+                        case 5 -> { // move left
+                            if (selectedDomino.getSideA().getXLoc() - 1 < 0 ||
+                                    selectedDomino.getSideB().getXLoc() - 1 < 0) {
+                                System.out.println("Error: invalid move. Domino will be outside of play area");
+                            } else {
+                                xChangeA = selectedDomino.getSideA().getXLoc() - 1;
+                                yChangeA = selectedDomino.getSideA().getYLoc();
+                                xChangeB = selectedDomino.getSideB().getXLoc() - 1;
+                                yChangeB = selectedDomino.getSideB().getYLoc();
+                            }
+                        }
+                        case 6 -> { // move right
+                            if (selectedDomino.getSideA().getXLoc() + 1 > p.getPlayerGameBoard().getWidth() - 1 ||
+                                    selectedDomino.getSideB().getXLoc() + 1 > p.getPlayerGameBoard().getWidth() - 1) {
+                                System.out.println("Error: invalid move. Domino will be outside of play area");
+                            } else {
+                                xChangeA = selectedDomino.getSideA().getXLoc() + 1;
+                                yChangeA = selectedDomino.getSideA().getYLoc();
+                                xChangeB = selectedDomino.getSideB().getXLoc() + 1;
+                                yChangeB = selectedDomino.getSideB().getYLoc();
+                            }
+                        }
+                        case 7 -> { // place domino on board at current location
+                            // if both sides of domino are over a space location that's empty
+                            if (playerBoardSpaces[sax][say].getSType() == LandType.EMPTY &&
+                                    playerBoardSpaces[sbx][sby].getSType() == LandType.EMPTY &&
+                                    verifyMatchingSide(p.getPlayerGameBoard().getGameBoardSpaces(), sax, say, sbx, sby, selectedDomino)) {
+                                // place domino on the game board
+                                int crownsA = selectedDomino.getSideACrowns();
+                                int crownsB = selectedDomino.getSideBCrowns();
+                                LandType sideTypeA = selectedDomino.getSideA().getSType();
+                                LandType sideTypeB = selectedDomino.getSideB().getSType();
+
+                                p.getPlayerGameBoard().getGameBoardSpace(sax, say).setNumCrowns(crownsA);
+                                p.getPlayerGameBoard().getGameBoardSpace(sax, say).setSType(sideTypeA);
+                                p.getPlayerGameBoard().getGameBoardSpace(sbx, sby).setNumCrowns(crownsB);
+                                p.getPlayerGameBoard().getGameBoardSpace(sbx, sby).setSType(sideTypeB);
+
+                                currentDominoSelection.remove(selection - 1);
+                                dominoPlaced = true;
+                            } else {
+                                if (verifyMatchingSide(p.getPlayerGameBoard().getGameBoardSpaces(), sax, say, sbx, sby, selectedDomino)) {
+                                    System.out.println("Error: location not empty for domino placement");
+                                } else {
+                                    System.out.println("Error: At least one side of the tile must match an existing tile or castle.");
+                                }
+                            }
+                        }
+                        case 8 -> {
+                            // domino is discarded, go to next player
+                            currentDominoSelection.remove(selection - 1);
+                            dominoPlaced = true;
+                        }
+                    }
 					
 					// update domino locations if move or rotated
 					selectedDomino.getSideA().setXLoc(xChangeA);
@@ -480,7 +465,7 @@ public class TextBasedKingdomino {
 		}
 	}
 	    /**
-     * @param playerGameBoard Takes player gameboard
+     * @param playerGameBoard Takes player game-board
      * @param sax             Tile side A intended x coordinate
      * @param say             Tile side A intended y coordinate
      * @param sbx             Tile side B intended x coordinate
@@ -491,7 +476,7 @@ public class TextBasedKingdomino {
      * Validates intended domino placement. One side of the selected domino terrains must match an adjacent
      * terrain already on the board or the starting castle.
      * <p>
-     * Method takes the playerboard, selected domino and intended placement. Creates lists of surrounding terrains
+     * Method takes the player-board, selected domino and intended placement. Creates lists of surrounding terrains
      * of intended placement. Checks to see if terrain of either side of tile matches at least one surrounding space
      * of that side.
      */
@@ -538,14 +523,7 @@ public class TextBasedKingdomino {
     }
 	
 	public void endGame() {
-		System.out.println("\n////--------FINAL SCORING--------\\\\\\\\\n");
-		
-		playerList.sort(Comparator.comparing(x -> x.getPlayerGameBoard().getCurrentScore()));
-		
-		for (int px = playerList.size()-1; px >= 0; px--) {
-			System.out.println(playerList.get(px).getPlayerName() + "'s final score: " 
-					+ playerList.get(px).getPlayerGameBoard().getCurrentScore());
-		}
+		TestGameBoardScoring.finalScoring(playerList);
 	}
 	
 	public void setPlayerCount(int playerCount) {
@@ -555,11 +533,7 @@ public class TextBasedKingdomino {
 	public void setPlayerList (ArrayList<Player> playerList) {
 		this.playerList = playerList;
 	}
-	
-	public void setDominosList (ArrayList<Domino> gameDominosList) {
-		this.gameDominoList = gameDominosList;
-	}
-	
+
 	public int getPlayerCount() {
 		return this.playerCount;
 	}
@@ -578,11 +552,11 @@ public class TextBasedKingdomino {
 		int count = 1;
 		for (Player p : playerList) {
 			if (count != playerList.size()) {
-				playerListString = playerListString.append("Player " + count + ": " + p.getPlayerName() + ", ");
-				count++;
+                playerListString.append("Player ").append(count).append(": ").append(p.getPlayerName()).append(", ");
+                count++;
 			} else {
-				playerListString = playerListString.append("Player " + count + ": " + p.getPlayerName());
-			}	
+                playerListString.append("Player ").append(count).append(": ").append(p.getPlayerName());
+            }
 		}
 		return playerListString.toString();
 	}
@@ -593,35 +567,26 @@ public class TextBasedKingdomino {
 		
 		for (int i = 0; i < this.getPlayerList().size(); i++) {
 			for (Player p : this.getPlayerList()) {
-				String orderText = "";
-				switch(p.getCurrentOrder()) {
-				case 0:
-					orderText = "first";
-					break;
-				case 1:
-					orderText = "second";
-					break;
-				case 2:
-					orderText = "third";
-					break;
-				case 3:
-					orderText = "fourth";
-					break;
-				}
-				
-				if (p.getCurrentOrder() == i) {
+				String orderText = switch (p.getCurrentOrder()) {
+                    case 0 -> "first";
+                    case 1 -> "second";
+                    case 2 -> "third";
+                    case 3 -> "fourth";
+                    default -> "";
+                };
+
+                if (p.getCurrentOrder() == i) {
 					if (p.getCurrentOrder() == this.getPlayerList().size()-1) {
-						playerListString = playerListString.append("and ");
-					}
-					
-					playerListString = playerListString.append(p.getPlayerName() 
-							+ " is the " + orderText + " player");
-					
-					if (p.getCurrentOrder() != this.getPlayerList().size()-1) {
-						playerListString = playerListString.append(", ");
-					} else {
-						playerListString = playerListString.append(".");
-					}
+                        playerListString.append("and ");
+                    }
+
+                    playerListString.append(p.getPlayerName()).append(" is the ").append(orderText).append(" player");
+
+                    if (p.getCurrentOrder() != this.getPlayerList().size()-1) {
+                        playerListString.append(", ");
+                    } else {
+                        playerListString.append(".");
+                    }
 				}
 			}
 		}

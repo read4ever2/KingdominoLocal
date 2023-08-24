@@ -14,7 +14,7 @@ public class Player {
     private String name = ""; // player's name
     private int currentOrder; // current round player turn order
     private int nextOrder; // next round turn order based on domino selection in the current round
-    private GameBoard gameboard; // player's game board
+    private final GameBoard gameboard; // player's game board
 
     // constructor
     public Player(String name) throws InvalidPlayerNameException {
@@ -27,8 +27,7 @@ public class Player {
 
     // this method checks whether player name is valid
     private boolean isInvalidName(String name) {
-        if (name.isBlank() || name.isEmpty()) return true;
-        return false;
+        return name.isBlank() || name.isEmpty();
     }
 
     // setters

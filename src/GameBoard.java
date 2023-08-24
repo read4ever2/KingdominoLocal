@@ -16,7 +16,7 @@ public class GameBoard {
     // attributes
     private final int WIDTH = 5; // max width of game board
     private final int HEIGHT = 5; // max height of game board
-    private Space[][] spaces; // representation of grid spaces on game board
+    private final Space[][] spaces; // representation of grid spaces on game board
     private ArrayList<ArrayList<Space>> scoredSpaces; // array list of spaces scored
     private int scoredSpacesCurrentLevel = 0; // current scoring level; used to group spaces for scoring
     private int currentScore = 0; // current score for the game board
@@ -48,12 +48,12 @@ public class GameBoard {
 
     // calculates current game board score through recursively calling scoreAll(x, y); returns score
     public void calculateCurrentScore(boolean debug) {
-        scoredSpaces = new ArrayList<ArrayList<Space>>(); // reset array list
+        scoredSpaces = new ArrayList<>(); // reset array list
         scoredSpacesCurrentLevel = 0; // reset scoring level
         for (int k = 0; k < WIDTH; k++) {
             for (int i = 0; i < HEIGHT; i++) {
                 if (!this.getGameBoardSpace(i, k).getScored()) {
-                    scoredSpaces.add(new ArrayList<Space>());
+                    scoredSpaces.add(new ArrayList<>());
                     //System.out.println("Size: " + scoredSpaces.size());
                     scoreAll(i, k);
                     scoredSpacesCurrentLevel++;
@@ -63,6 +63,11 @@ public class GameBoard {
 
         if (debug) this.debugGameBoardPrint(); // print game board tile info if in debug mode
 
+        this.currentScore = getTotalScore(); // set this game board's score as the calculated score
+        this.resetSpacesScoredBooleanCheck(); // reset "scored" flag on each game board space
+    }
+
+    private int getTotalScore() {
         int totalScore = 0; // capture total score
         for (ArrayList<Space> a : scoredSpaces) { // for each group of tiles grouped together in a score group
             int totalCrowns = 0; // prepare to capture the total number of crowns
@@ -72,9 +77,7 @@ public class GameBoard {
             }
             totalScore += totalCrowns * totalSpaces; // multiply crowns and spaces in group; add to total score
         }
-
-        this.currentScore = totalScore; // set this game board's score as the calculated score
-        this.resetSpacesScoredBooleanCheck(); // reset "scored" flag on each game board space
+        return totalScore;
     }
 
     // returns the current score of this game board
@@ -101,7 +104,7 @@ public class GameBoard {
                 totalCrowns += s.getNumCrowns(); // print info and add crowns to total crowns
             }
             System.out.println("Group Score: " + (totalCrowns * totalSpaces));
-            System.out.println("");
+            System.out.println();
             groupNumber++; // increase group number for print purposes
         }
     }
@@ -117,9 +120,9 @@ public class GameBoard {
             return;
         }
 
-        // if this space type is different than other space types in this score group, don't check it
+        // if this space type is different from other space types in this score group, don't check it
         for (Space s : scoredSpaces.get(scoredSpacesCurrentLevel)) {
-            if (scoredSpaces.get(scoredSpacesCurrentLevel).size() > 0 &&
+            if (!scoredSpaces.get(scoredSpacesCurrentLevel).isEmpty() &&
                     this.getGameBoardSpace(startX, startY).getSType() != s.getSType()) {
                 return;
             }
@@ -153,10 +156,10 @@ public class GameBoard {
     }
 
     // subclasses
-    class Space {
+    static class Space {
         private LandType sType; // type of land on this space
         private int xLoc; // x location of this space on game board
-        private int yLoc; // y location of this sapce on game board
+        private int yLoc; // y location of this space on game board
         private int numCrowns; // number of crowns this space has
         private boolean scored; // whether this space has been scored
 

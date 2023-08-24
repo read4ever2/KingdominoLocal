@@ -2,15 +2,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class StaticGameDominoList {
-	static {
-		
-	}
-	static private ArrayList<Domino> gameDominoList;// list of all dominos in game
+    static private final ArrayList<Domino> gameDominoList;// list of all dominoes in game
 	
 	static {
-		gameDominoList = new ArrayList<Domino>();
+		gameDominoList = new ArrayList<>();
 		
-		// then create dominos for the game and add them to the ArrayList		
+		// then create dominoes for the game and add them to the ArrayList
 		gameDominoList.add(new Domino(1, LandType.WHEATFIELD, 0, LandType.WHEATFIELD, 0));
 		gameDominoList.add(new Domino(2, LandType.WHEATFIELD, 0, LandType.WHEATFIELD, 0));
 		gameDominoList.add(new Domino(3, LandType.FOREST, 0, LandType.FOREST, 0));
@@ -65,30 +62,30 @@ public class StaticGameDominoList {
 		gameDominoList.add(new Domino(48, LandType.WHEATFIELD, 0, LandType.MINE, 3));
 	}
 	
-	// this method removes dominos based on the number of players according to Kingdomino rules
-	public static void removeDominosFromList(int playerCount) {		
-		int dominosToRemove = 0; // number of dominos to remove; initialized at 0
-		int removeCount = 0; // current number of dominos removed
+	// this method removes dominoes based on the number of players according to Kingdomino rules
+	public static void removeDominoesFromList(int playerCount) {
+		int dominoesToRemove; // number of dominoes to remove; initialized at 0
+		int removeCount = 0; // current number of dominoes removed
 		Random rand = new Random(); // random domino to remove from ArrayList
-		
-		switch(playerCount) {
-		case 2: // if two players
-			dominosToRemove = 24; // remove 24 dominos for 2 players
-			while (removeCount < dominosToRemove) { // keep removing dominos until 24 have been removed
-				int randomRemove = rand.nextInt(gameDominoList.size());
-				gameDominoList.remove(randomRemove);
-				removeCount++;
-			}
-			break;
-		case 3: // if two players
-			dominosToRemove = 12; // remove 24 dominos for 2 players
-			while (removeCount < dominosToRemove) { // keep removing dominos until 12 have been removed
-				int randomRemove = rand.nextInt(gameDominoList.size());
-				gameDominoList.remove(randomRemove);
-				removeCount++;
-			}
-			break;
-		}
+
+        switch (playerCount) {
+            case 2 -> { // if two players
+                dominoesToRemove = 24; // remove 24 dominoes for 2 players
+                while (removeCount < dominoesToRemove) { // keep removing dominoes until 24 have been removed
+                    int randomRemove = rand.nextInt(gameDominoList.size());
+                    gameDominoList.remove(randomRemove);
+                    removeCount++;
+                }
+            }
+            case 3 -> { // if two players
+                dominoesToRemove = 12; // remove 24 dominoes for 2 players
+                while (removeCount < dominoesToRemove) { // keep removing dominoes until 12 have been removed
+                    int randomRemove = rand.nextInt(gameDominoList.size());
+                    gameDominoList.remove(randomRemove);
+                    removeCount++;
+                }
+            }
+        }
 	}
 	
 	public static ArrayList<Domino> getDominosList() {
